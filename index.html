@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MO Permit Prep Game</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="game-container">
+    <h1>Missouri Permit Prep: Heads Up!</h1>
+    <div id="score-round"></div>
+    <div id="question-section" class="hidden">
+      <div id="question-text"></div>
+      <div id="choices"></div>
+      <div id="feedback" class="hidden"></div>
+      <button id="next-btn" class="hidden">Next</button>
+    </div>
+    <div id="start-section">
+      <button id="start-btn">Start Game</button>
+    </div>
+    <div id="round-section" class="hidden">
+      <button id="next-round-btn">Next Round</button>
+    </div>
+    <div id="end-section" class="hidden">
+      <div id="final-score"></div>
+      <button id="restart-btn">Restart</button>
+    </div>
+  </div>
+  <footer>
+    <a href="https://dor.mo.gov/driver-license/guide/" target="_blank">Official Missouri Driver Guide</a>
+  </footer>
+  <script src="questions.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
