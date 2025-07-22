@@ -12,6 +12,7 @@ let usedQuestions = [];
 let correctlyAnsweredSet = new Set();
 let rounds = [];
 let roundAnswered = [];
+let roundCorrect = [];
 
 const startBtn = document.getElementById('start-btn');
 const nextBtn = document.getElementById('next-btn');
@@ -117,6 +118,7 @@ function startGame() {
   currentRound = 0;
   score = 0;
   roundAnswered = [];
+  roundCorrect = [];
   startSection.classList.add('hidden');
   endSection.classList.add('hidden');
   roundSection.classList.add('hidden');
@@ -127,6 +129,7 @@ function showRound() {
   currentRound++;
   currentQuestionIndex = 0;
   roundAnswered[currentRound - 1] = Array(QUESTIONS_PER_ROUND).fill(false);
+  roundCorrect[currentRound - 1] = 0;
   scoreRoundDiv.textContent = `Round ${currentRound} of ${TOTAL_ROUNDS} | Score: ${score}`;
   questionSection.classList.remove('hidden');
   feedbackDiv.classList.add('hidden');
@@ -146,12 +149,17 @@ function showQuestion() {
   choicesDiv.innerHTML = '';
   let unanswered = getUnansweredIndexes();
   if (unanswered.length === 0) {
-    // All questions answered, end round
+    // All questions answered, check if user can advance
     questionSection.classList.add('hidden');
-    if (currentRound < TOTAL_ROUNDS) {
-      roundSection.classList.remove('hidden');
+    if (roundCorrect[currentRound - 1] >= 21) {
+      if (currentRound < TOTAL_ROUNDS) {
+        roundSection.classList.remove('hidden');
+      } else {
+        showEnd();
+      }
     } else {
-      showEnd();
+      // Not enough correct, must retry round
+      showRetryRound();
     }
     return;
   }
@@ -194,6 +202,7 @@ function startGame() {
   currentRound = 0;
   score = 0;
   roundAnswered = [];
+  roundCorrect = [];
   startSection.classList.add('hidden');
   endSection.classList.add('hidden');
   roundSection.classList.add('hidden');
@@ -205,6 +214,7 @@ function showRound() {
   currentRound++;
   currentQuestionIndex = 0;
   roundAnswered[currentRound - 1] = Array(QUESTIONS_PER_ROUND).fill(false);
+  roundCorrect[currentRound - 1] = 0;
   scoreRoundDiv.textContent = `Round ${currentRound} of ${TOTAL_ROUNDS} | Score: ${score}`;
   questionSection.classList.remove('hidden');
   feedbackDiv.classList.add('hidden');
@@ -226,12 +236,17 @@ function showQuestion() {
   choicesDiv.innerHTML = '';
   let unanswered = getUnansweredIndexes();
   if (unanswered.length === 0) {
-    // All questions answered, end round
+    // All questions answered, check if user can advance
     questionSection.classList.add('hidden');
-    if (currentRound < TOTAL_ROUNDS) {
-      roundSection.classList.remove('hidden');
+    if (roundCorrect[currentRound - 1] >= 21) {
+      if (currentRound < TOTAL_ROUNDS) {
+        roundSection.classList.remove('hidden');
+      } else {
+        showEnd();
+      }
     } else {
-      showEnd();
+      // Not enough correct, must retry round
+      showRetryRound();
     }
     return;
   }
@@ -259,6 +274,7 @@ function selectAnswer(btn, question, choice) {
     btn.classList.add('correct');
     score++;
     roundAnswered[currentRound - 1][currentQuestionIndex] = true;
+    roundCorrect[currentRound - 1]++;
     updateScoreDisplay();
     feedbackDiv.innerHTML = `<span class=\"tiktok-correct\">${getRandomCongrats()}</span>`;
     feedbackDiv.style.color = '#ff69b4';
@@ -276,6 +292,21 @@ function selectAnswer(btn, question, choice) {
     });
   }
   nextBtn.classList.remove('hidden');
+}
+
+function showRetryRound() {
+  roundSection.classList.remove('hidden');
+  roundSection.innerHTML = `<div style='text-align:center;color:#ff69b4;font-size:1.2em;margin-bottom:1em;'>You need at least 21 correct to advance.<br>You got ${roundCorrect[currentRound - 1]} correct.<br><button id='retry-round-btn' style='margin-top:1em;background:#ff69b4;color:#fff;border:none;border-radius:1em;padding:0.7em 1.5em;font-size:1em;'>Retry Round</button></div>`;
+  document.getElementById('retry-round-btn').onclick = retryRound;
+}
+
+function retryRound() {
+  // Reset round state but keep score as is
+  roundAnswered[currentRound - 1] = Array(QUESTIONS_PER_ROUND).fill(false);
+  roundCorrect[currentRound - 1] = 0;
+  currentQuestionIndex = 0;
+  roundSection.classList.add('hidden');
+  showQuestion();
 }
 
 // function to show the end screen
