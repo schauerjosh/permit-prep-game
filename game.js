@@ -109,88 +109,6 @@ function shuffle(array) {
   return array;
 }
 
-function startGame() {
-  shuffledQuestions = shuffle([...allQuestions]);
-  rounds = [];
-  for (let i = 0; i < TOTAL_ROUNDS; i++) {
-    rounds.push(shuffledQuestions.slice(i * QUESTIONS_PER_ROUND, (i + 1) * QUESTIONS_PER_ROUND));
-  }
-  currentRound = 0;
-  score = 0;
-  roundAnswered = [];
-  roundCorrect = [];
-  startSection.classList.add('hidden');
-  endSection.classList.add('hidden');
-  roundSection.classList.add('hidden');
-  showRound();
-}
-
-function showRound() {
-  currentRound++;
-  currentQuestionIndex = 0;
-  roundAnswered[currentRound - 1] = Array(QUESTIONS_PER_ROUND).fill(false);
-  roundCorrect[currentRound - 1] = 0;
-  scoreRoundDiv.textContent = `Round ${currentRound} of ${TOTAL_ROUNDS} | Score: ${score}`;
-  questionSection.classList.remove('hidden');
-  feedbackDiv.classList.add('hidden');
-  nextBtn.classList.add('hidden');
-  roundSection.classList.add('hidden');
-  endSection.classList.add('hidden');
-  showQuestion();
-}
-
-function getUnansweredIndexes() {
-  return roundAnswered[currentRound - 1].map((answered, idx) => !answered ? idx : null).filter(idx => idx !== null);
-}
-
-function showQuestion() {
-  feedbackDiv.classList.add('hidden');
-  nextBtn.classList.add('hidden');
-  choicesDiv.innerHTML = '';
-  let unanswered = getUnansweredIndexes();
-  if (unanswered.length === 0) {
-    // All questions answered, check if user can advance
-    questionSection.classList.add('hidden');
-    if (roundCorrect[currentRound - 1] >= 21) {
-      if (currentRound < TOTAL_ROUNDS) {
-        roundSection.classList.remove('hidden');
-      } else {
-        showEnd();
-      }
-    } else {
-      // Not enough correct, must retry round
-      showRetryRound();
-    }
-    return;
-  }
-  // Cycle through unanswered questions
-  if (!unanswered.includes(currentQuestionIndex)) {
-    currentQuestionIndex = unanswered[0];
-  }
-  const question = rounds[currentRound - 1][currentQuestionIndex];
-  questionText.innerHTML = `<span class="tiktok-q">Q:</span> ${question.question}`;
-  question.choices.forEach(choice => {
-    const btn = document.createElement('button');
-    btn.className = 'choice-btn';
-    btn.textContent = choice;
-    btn.onclick = () => selectAnswer(btn, question, choice);
-    choicesDiv.appendChild(btn);
-  });
-  // Add swipe gesture for next
-  addSwipeListener();
-}
-
-function getRandomCongrats() {
-  return congratsMessages[Math.floor(Math.random() * congratsMessages.length)];
-}
-function getRandomWrong() {
-  return wrongMessages[Math.floor(Math.random() * wrongMessages.length)];
-}
-
-function updateScoreDisplay() {
-  scoreRoundDiv.textContent = `Round ${currentRound} of ${TOTAL_ROUNDS} | Score: ${score}`;
-}
-
 // function to start the game
 function startGame() {
   // shuffle the questions and divide them into rounds
@@ -267,6 +185,17 @@ function showQuestion() {
   addSwipeListener();
 }
 
+function getRandomCongrats() {
+  return congratsMessages[Math.floor(Math.random() * congratsMessages.length)];
+}
+function getRandomWrong() {
+  return wrongMessages[Math.floor(Math.random() * wrongMessages.length)];
+}
+
+function updateScoreDisplay() {
+  scoreRoundDiv.textContent = `Round ${currentRound} of ${TOTAL_ROUNDS} | Score: ${score}`;
+}
+
 // function to select an answer
 function selectAnswer(btn, question, choice) {
   Array.from(choicesDiv.children).forEach(b => b.disabled = true);
@@ -292,6 +221,28 @@ function selectAnswer(btn, question, choice) {
     });
   }
   nextBtn.classList.remove('hidden');
+}
+
+function nextQuestion() {
+  let unanswered = getUnansweredIndexes();
+  if (unanswered.length === 0) {
+    // All questions answered, check if user can advance
+    questionSection.classList.add('hidden');
+    if (roundCorrect[currentRound - 1] >= 21) {
+      if (currentRound < TOTAL_ROUNDS) {
+        roundSection.classList.remove('hidden');
+      } else {
+        showEnd();
+      }
+    } else {
+      showRetryRound();
+    }
+    return;
+  }
+  // Move to next unanswered question
+  let idx = unanswered.indexOf(currentQuestionIndex);
+  currentQuestionIndex = unanswered[(idx + 1) % unanswered.length];
+  showQuestion();
 }
 
 function showRetryRound() {
