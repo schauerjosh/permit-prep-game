@@ -148,6 +148,8 @@ function getUnansweredIndexes() {
 }
 
 // function to show a question
+let swipeHandlerSet = false;
+
 function showQuestion() {
   feedbackDiv.classList.add('hidden');
   nextBtn.classList.add('hidden');
@@ -163,7 +165,6 @@ function showQuestion() {
         showEnd();
       }
     } else {
-      // Not enough correct, must retry round
       showRetryRound();
     }
     return;
@@ -178,11 +179,15 @@ function showQuestion() {
     const btn = document.createElement('button');
     btn.className = 'choice-btn';
     btn.textContent = choice;
+    btn.disabled = false;
     btn.onclick = () => selectAnswer(btn, question, choice);
     choicesDiv.appendChild(btn);
   });
-  // Add swipe gesture for next
-  addSwipeListener();
+  // Only add swipe handler once
+  if (!swipeHandlerSet) {
+    addSwipeListener();
+    swipeHandlerSet = true;
+  }
 }
 
 function getRandomCongrats() {
@@ -276,7 +281,6 @@ function restartGame() {
 
 // function to add swipe listener for mobile
 function addSwipeListener() {
-  // Simple left/right swipe for next (mobile)
   let startX = null;
   questionSection.ontouchstart = e => {
     if (e.touches.length === 1) startX = e.touches[0].clientX;
