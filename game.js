@@ -9,6 +9,7 @@ let currentQuestionIndex = 0;
 let score = 0;
 let roundScore = 0;
 let usedQuestions = [];
+let correctlyAnsweredSet = new Set();
 
 const startBtn = document.getElementById('start-btn');
 const nextBtn = document.getElementById('next-btn');
@@ -37,10 +38,19 @@ function startGame() {
   currentRound = 1;
   score = 0;
   usedQuestions = [];
+  correctlyAnsweredSet = new Set();
   startSection.classList.add('hidden');
   endSection.classList.add('hidden');
   roundSection.classList.add('hidden');
   showRound();
+}
+
+function getNextQuestion() {
+  // Only return questions not already answered correctly
+  let startIdx = (currentRound - 1) * QUESTIONS_PER_ROUND;
+  let endIdx = startIdx + QUESTIONS_PER_ROUND;
+  let roundQuestions = shuffledQuestions.slice(startIdx, endIdx).filter(q => !correctlyAnsweredSet.has(q.question));
+  return roundQuestions[currentQuestionIndex] || null;
 }
 
 function showRound() {
@@ -59,10 +69,13 @@ function showQuestion() {
   feedbackDiv.classList.add('hidden');
   nextBtn.classList.add('hidden');
   choicesDiv.innerHTML = '';
-  const qIdx = (currentRound - 1) * QUESTIONS_PER_ROUND + currentQuestionIndex;
-  const question = shuffledQuestions[qIdx];
-  if (!question) return;
-  questionText.textContent = question.question;
+  const question = getNextQuestion();
+  if (!question) {
+    // All questions for this round have been answered correctly
+    nextQuestion();
+    return;
+  }
+  questionText.innerHTML = `<span class="tiktok-q">Q:</span> ${question.question}`;
   question.choices.forEach(choice => {
     const btn = document.createElement('button');
     btn.className = 'choice-btn';
@@ -70,6 +83,8 @@ function showQuestion() {
     btn.onclick = () => selectAnswer(btn, question, choice);
     choicesDiv.appendChild(btn);
   });
+  // Add swipe gesture for next
+  addSwipeListener();
 }
 
 function selectAnswer(btn, question, choice) {
@@ -78,13 +93,16 @@ function selectAnswer(btn, question, choice) {
     btn.classList.add('correct');
     score++;
     roundScore++;
-    feedbackDiv.textContent = 'Correct!';
-    feedbackDiv.style.color = '#1db954';
+    correctlyAnsweredSet.add(question.question);
+    feedbackDiv.innerHTML = '<span class="tiktok-correct">✨ Yasss! Correct! ✨</span>';
+    feedbackDiv.style.color = '#ff69b4';
     feedbackDiv.classList.remove('hidden');
     vibrate([60]);
+    // Add a little confetti effect
+    showConfetti();
   } else {
     btn.classList.add('wrong');
-    feedbackDiv.innerHTML = `Wrong!<br>See: <a href="${question.reference}" target="_blank">Driver Guide</a>`;
+    feedbackDiv.innerHTML = `<span class="tiktok-wrong">Nope! 💅</span><br>See: <a href="${question.reference}" target="_blank">Driver Guide</a>`;
     feedbackDiv.style.color = '#e74c3c';
     feedbackDiv.classList.remove('hidden');
     vibrate([100, 60, 100]);
@@ -104,7 +122,11 @@ function vibrate(pattern) {
 
 function nextQuestion() {
   currentQuestionIndex++;
-  if (currentQuestionIndex < QUESTIONS_PER_ROUND) {
+  // If all questions for this round have been answered correctly, or we've shown all, move on
+  let startIdx = (currentRound - 1) * QUESTIONS_PER_ROUND;
+  let endIdx = startIdx + QUESTIONS_PER_ROUND;
+  let roundQuestions = shuffledQuestions.slice(startIdx, endIdx).filter(q => !correctlyAnsweredSet.has(q.question));
+  if (currentQuestionIndex < QUESTIONS_PER_ROUND && roundQuestions.length > 0) {
     showQuestion();
   } else {
     // End of round
@@ -132,6 +154,32 @@ function showEnd() {
 
 function restartGame() {
   startGame();
+}
+
+function addSwipeListener() {
+  // Simple left/right swipe for next (mobile)
+  let startX = null;
+  questionSection.ontouchstart = e => {
+    if (e.touches.length === 1) startX = e.touches[0].clientX;
+  };
+  questionSection.ontouchend = e => {
+    if (startX !== null && e.changedTouches.length === 1) {
+      let dx = e.changedTouches[0].clientX - startX;
+      if (Math.abs(dx) > 60) {
+        nextBtn.click();
+      }
+    }
+    startX = null;
+  };
+}
+
+function showConfetti() {
+  // Simple emoji confetti burst
+  const confetti = document.createElement('div');
+  confetti.className = 'confetti';
+  confetti.innerText = '💖✨🎉';
+  document.body.appendChild(confetti);
+  setTimeout(() => confetti.remove(), 1200);
 }
 
 startBtn.onclick = startGame;
