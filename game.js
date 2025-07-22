@@ -10,6 +10,8 @@ let score = 0;
 let roundScore = 0;
 let usedQuestions = [];
 let correctlyAnsweredSet = new Set();
+let rounds = [];
+let roundAnswered = [];
 
 const startBtn = document.getElementById('start-btn');
 const nextBtn = document.getElementById('next-btn');
@@ -25,6 +27,24 @@ const feedbackDiv = document.getElementById('feedback');
 const scoreRoundDiv = document.getElementById('score-round');
 const finalScoreDiv = document.getElementById('final-score');
 
+const congratsMessages = [
+  '✨ Yasss! Correct! ✨',
+  '💖 Slay! You got it!',
+  '🎉 Queen energy! 🎉',
+  '🔥 You ate that up!',
+  '💅 Periodt! No notes!',
+  '🌈 Werk it, bestie!',
+  '👑 Crown on, answer strong!',
+  '💜 You understood the assignment!',
+  '🦋 So iconic!',
+  '💫 That was a serve!',
+  '🌟 Main character moment!',
+  '🩷 Go off!',
+  '💃 You snapped!',
+  '🦄 Legendary!',
+  '🎀 Pink vibes only!'
+];
+
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -35,27 +55,23 @@ function shuffle(array) {
 
 function startGame() {
   shuffledQuestions = shuffle([...allQuestions]);
-  currentRound = 1;
+  rounds = [];
+  for (let i = 0; i < TOTAL_ROUNDS; i++) {
+    rounds.push(shuffledQuestions.slice(i * QUESTIONS_PER_ROUND, (i + 1) * QUESTIONS_PER_ROUND));
+  }
+  currentRound = 0;
   score = 0;
-  usedQuestions = [];
-  correctlyAnsweredSet = new Set();
+  roundAnswered = [];
   startSection.classList.add('hidden');
   endSection.classList.add('hidden');
   roundSection.classList.add('hidden');
   showRound();
 }
 
-function getNextQuestion() {
-  // Only return questions not already answered correctly
-  let startIdx = (currentRound - 1) * QUESTIONS_PER_ROUND;
-  let endIdx = startIdx + QUESTIONS_PER_ROUND;
-  let roundQuestions = shuffledQuestions.slice(startIdx, endIdx).filter(q => !correctlyAnsweredSet.has(q.question));
-  return roundQuestions[currentQuestionIndex] || null;
-}
-
 function showRound() {
-  roundScore = 0;
+  currentRound++;
   currentQuestionIndex = 0;
+  roundAnswered[currentRound - 1] = Array(QUESTIONS_PER_ROUND).fill(false);
   scoreRoundDiv.textContent = `Round ${currentRound} of ${TOTAL_ROUNDS} | Score: ${score}`;
   questionSection.classList.remove('hidden');
   feedbackDiv.classList.add('hidden');
@@ -65,16 +81,30 @@ function showRound() {
   showQuestion();
 }
 
+function getUnansweredIndexes() {
+  return roundAnswered[currentRound - 1].map((answered, idx) => !answered ? idx : null).filter(idx => idx !== null);
+}
+
 function showQuestion() {
   feedbackDiv.classList.add('hidden');
   nextBtn.classList.add('hidden');
   choicesDiv.innerHTML = '';
-  const question = getNextQuestion();
-  if (!question) {
-    // All questions for this round have been answered correctly
-    nextQuestion();
+  let unanswered = getUnansweredIndexes();
+  if (unanswered.length === 0) {
+    // All questions answered, end round
+    questionSection.classList.add('hidden');
+    if (currentRound < TOTAL_ROUNDS) {
+      roundSection.classList.remove('hidden');
+    } else {
+      showEnd();
+    }
     return;
   }
+  // Cycle through unanswered questions
+  if (!unanswered.includes(currentQuestionIndex)) {
+    currentQuestionIndex = unanswered[0];
+  }
+  const question = rounds[currentRound - 1][currentQuestionIndex];
   questionText.innerHTML = `<span class="tiktok-q">Q:</span> ${question.question}`;
   question.choices.forEach(choice => {
     const btn = document.createElement('button');
@@ -87,18 +117,20 @@ function showQuestion() {
   addSwipeListener();
 }
 
+function getRandomCongrats() {
+  return congratsMessages[Math.floor(Math.random() * congratsMessages.length)];
+}
+
 function selectAnswer(btn, question, choice) {
   Array.from(choicesDiv.children).forEach(b => b.disabled = true);
   if (choice === question.answer) {
     btn.classList.add('correct');
     score++;
-    roundScore++;
-    correctlyAnsweredSet.add(question.question);
-    feedbackDiv.innerHTML = '<span class="tiktok-correct">✨ Yasss! Correct! ✨</span>';
+    roundAnswered[currentRound - 1][currentQuestionIndex] = true;
+    feedbackDiv.innerHTML = `<span class=\"tiktok-correct\">${getRandomCongrats()}</span>`;
     feedbackDiv.style.color = '#ff69b4';
     feedbackDiv.classList.remove('hidden');
     vibrate([60]);
-    // Add a little confetti effect
     showConfetti();
   } else {
     btn.classList.add('wrong');
@@ -121,26 +153,24 @@ function vibrate(pattern) {
 }
 
 function nextQuestion() {
-  currentQuestionIndex++;
-  // If all questions for this round have been answered correctly, or we've shown all, move on
-  let startIdx = (currentRound - 1) * QUESTIONS_PER_ROUND;
-  let endIdx = startIdx + QUESTIONS_PER_ROUND;
-  let roundQuestions = shuffledQuestions.slice(startIdx, endIdx).filter(q => !correctlyAnsweredSet.has(q.question));
-  if (currentQuestionIndex < QUESTIONS_PER_ROUND && roundQuestions.length > 0) {
-    showQuestion();
-  } else {
-    // End of round
+  let unanswered = getUnansweredIndexes();
+  if (unanswered.length === 0) {
+    // All questions answered, end round
     questionSection.classList.add('hidden');
     if (currentRound < TOTAL_ROUNDS) {
       roundSection.classList.remove('hidden');
     } else {
       showEnd();
     }
+    return;
   }
+  // Move to next unanswered question
+  let idx = unanswered.indexOf(currentQuestionIndex);
+  currentQuestionIndex = unanswered[(idx + 1) % unanswered.length];
+  showQuestion();
 }
 
 function nextRound() {
-  currentRound++;
   showRound();
 }
 
