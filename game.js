@@ -42,7 +42,62 @@ const congratsMessages = [
   '🩷 Go off!',
   '💃 You snapped!',
   '🦄 Legendary!',
-  '🎀 Pink vibes only!'
+  '🎀 Pink vibes only!',
+  '💥 Boom! Genius!',
+  '🦋 Butterfly brain!',
+  '🦄 Unicorn level smart!',
+  '💎 Shining bright!',
+  '🍦 Sweet victory!',
+  '🦩 Flamingo flex!',
+  '🪩 Disco brain!',
+  '🧁 Cupcake win!',
+  '🩰 Ballet of brains!',
+  '🕺 Dance break! You nailed it!',
+  '🦜 Parrot says: YAAAS!',
+  '🦚 Peacocking that answer!',
+  '🦥 Slow clap for you!',
+  '🦦 Otterly amazing!',
+  '🦔 Hedge-hogging the win!',
+  '🦦 Otterly fabulous!',
+  '🦄 You’re a legend!',
+  '🦋 Fluttering to success!',
+  '🦩 Pink power!',
+  '🦚 Strut your stuff!',
+  '🦜 Talk of the town!',
+  '🦥 Chill and still a champ!',
+  '🦦 Splashing success!',
+  '🦔 Spiky smart!',
+  '🦄 Magic moment!',
+  '🦋 Butterfly vibes!',
+  '🦩 Flamingo fabulous!',
+  '🦚 Peacock proud!',
+  '🦜 Parrot party!',
+  '🦥 Sloth speed, genius brain!',
+  '🦦 Otterly unstoppable!',
+  '🦔 Hedgehog hero!'
+];
+
+const wrongMessages = [
+  'Oops! Not quite, but you got this! 💪',
+  'So close! Time for a quick study break 📚',
+  'No worries, even queens miss sometimes 👑',
+  'Wrong, but you’re still iconic! ✨',
+  'Try again, superstar! 🌟',
+  'Missed it, but you’re still a legend 🦄',
+  'Not the vibe, but you’ll get it next time! 💅',
+  'Study up and slay next round! 📖',
+  'Almost! Check the guide and come back stronger! 🔥',
+  'No biggie! Study and flex next time! 💪',
+  'You’re learning! Check the answer and glow up! 💡',
+  'Not today, but you’re still main character! 🎬',
+  'Wrong, but you’re still trending! 🔝',
+  'Keep going, bestie! You got this! 🩷',
+  'Study break! You’ll ace it next time! 📚',
+  'Oops! Let’s get that bread next time! 🍞',
+  'Not quite, but you’re still a star! ⭐️',
+  'Almost! Study and slay! 💅',
+  'No worries, you’re still iconic! ✨',
+  'Missed it, but you’re still a legend 🦄'
 ];
 
 function shuffle(array) {
@@ -120,39 +175,55 @@ function showQuestion() {
 function getRandomCongrats() {
   return congratsMessages[Math.floor(Math.random() * congratsMessages.length)];
 }
-
-function selectAnswer(btn, question, choice) {
-  Array.from(choicesDiv.children).forEach(b => b.disabled = true);
-  if (choice === question.answer) {
-    btn.classList.add('correct');
-    score++;
-    roundAnswered[currentRound - 1][currentQuestionIndex] = true;
-    feedbackDiv.innerHTML = `<span class=\"tiktok-correct\">${getRandomCongrats()}</span>`;
-    feedbackDiv.style.color = '#ff69b4';
-    feedbackDiv.classList.remove('hidden');
-    vibrate([60]);
-    showConfetti();
-  } else {
-    btn.classList.add('wrong');
-    feedbackDiv.innerHTML = `<span class="tiktok-wrong">Nope! 💅</span><br>See: <a href="${question.reference}" target="_blank">Driver Guide</a>`;
-    feedbackDiv.style.color = '#e74c3c';
-    feedbackDiv.classList.remove('hidden');
-    vibrate([100, 60, 100]);
-    // Highlight correct answer
-    Array.from(choicesDiv.children).forEach(b => {
-      if (b.textContent === question.answer) b.classList.add('correct');
-    });
-  }
-  nextBtn.classList.remove('hidden');
+function getRandomWrong() {
+  return wrongMessages[Math.floor(Math.random() * wrongMessages.length)];
 }
 
-function vibrate(pattern) {
-  if (navigator.vibrate) {
-    navigator.vibrate(pattern);
-  }
+function updateScoreDisplay() {
+  scoreRoundDiv.textContent = `Round ${currentRound} of ${TOTAL_ROUNDS} | Score: ${score}`;
 }
 
-function nextQuestion() {
+// function to start the game
+function startGame() {
+  // shuffle the questions and divide them into rounds
+  shuffledQuestions = shuffle([...allQuestions]);
+  rounds = [];
+  for (let i = 0; i < TOTAL_ROUNDS; i++) {
+    rounds.push(shuffledQuestions.slice(i * QUESTIONS_PER_ROUND, (i + 1) * QUESTIONS_PER_ROUND));
+  }
+  currentRound = 0;
+  score = 0;
+  roundAnswered = [];
+  startSection.classList.add('hidden');
+  endSection.classList.add('hidden');
+  roundSection.classList.add('hidden');
+  showRound();
+}
+
+// function to show the current round
+function showRound() {
+  currentRound++;
+  currentQuestionIndex = 0;
+  roundAnswered[currentRound - 1] = Array(QUESTIONS_PER_ROUND).fill(false);
+  scoreRoundDiv.textContent = `Round ${currentRound} of ${TOTAL_ROUNDS} | Score: ${score}`;
+  questionSection.classList.remove('hidden');
+  feedbackDiv.classList.add('hidden');
+  nextBtn.classList.add('hidden');
+  roundSection.classList.add('hidden');
+  endSection.classList.add('hidden');
+  showQuestion();
+}
+
+// function to get the indexes of unanswered questions
+function getUnansweredIndexes() {
+  return roundAnswered[currentRound - 1].map((answered, idx) => !answered ? idx : null).filter(idx => idx !== null);
+}
+
+// function to show a question
+function showQuestion() {
+  feedbackDiv.classList.add('hidden');
+  nextBtn.classList.add('hidden');
+  choicesDiv.innerHTML = '';
   let unanswered = getUnansweredIndexes();
   if (unanswered.length === 0) {
     // All questions answered, end round
@@ -164,16 +235,50 @@ function nextQuestion() {
     }
     return;
   }
-  // Move to next unanswered question
-  let idx = unanswered.indexOf(currentQuestionIndex);
-  currentQuestionIndex = unanswered[(idx + 1) % unanswered.length];
-  showQuestion();
+  // Cycle through unanswered questions
+  if (!unanswered.includes(currentQuestionIndex)) {
+    currentQuestionIndex = unanswered[0];
+  }
+  const question = rounds[currentRound - 1][currentQuestionIndex];
+  questionText.innerHTML = `<span class="tiktok-q">Q:</span> ${question.question}`;
+  question.choices.forEach(choice => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.textContent = choice;
+    btn.onclick = () => selectAnswer(btn, question, choice);
+    choicesDiv.appendChild(btn);
+  });
+  // Add swipe gesture for next
+  addSwipeListener();
 }
 
-function nextRound() {
-  showRound();
+// function to select an answer
+function selectAnswer(btn, question, choice) {
+  Array.from(choicesDiv.children).forEach(b => b.disabled = true);
+  if (choice === question.answer) {
+    btn.classList.add('correct');
+    score++;
+    roundAnswered[currentRound - 1][currentQuestionIndex] = true;
+    updateScoreDisplay();
+    feedbackDiv.innerHTML = `<span class=\"tiktok-correct\">${getRandomCongrats()}</span>`;
+    feedbackDiv.style.color = '#ff69b4';
+    feedbackDiv.classList.remove('hidden');
+    vibrate([60]);
+    showExplodingHearts();
+  } else {
+    btn.classList.add('wrong');
+    feedbackDiv.innerHTML = `<span class=\"tiktok-wrong\">${getRandomWrong()}</span><br><a class=\"study-link\" href=\"${question.reference}\" target=\"_blank\">📖 Tap here to study the answer</a>`;
+    feedbackDiv.style.color = '#e74c3c';
+    feedbackDiv.classList.remove('hidden');
+    vibrate([100, 60, 100]);
+    Array.from(choicesDiv.children).forEach(b => {
+      if (b.textContent === question.answer) b.classList.add('correct');
+    });
+  }
+  nextBtn.classList.remove('hidden');
 }
 
+// function to show the end screen
 function showEnd() {
   endSection.classList.remove('hidden');
   finalScoreDiv.textContent = `Final Score: ${score} / ${QUESTIONS_PER_ROUND * TOTAL_ROUNDS}`;
@@ -182,10 +287,12 @@ function showEnd() {
   roundSection.classList.add('hidden');
 }
 
+// function to restart the game
 function restartGame() {
   startGame();
 }
 
+// function to add swipe listener for mobile
 function addSwipeListener() {
   // Simple left/right swipe for next (mobile)
   let startX = null;
@@ -203,13 +310,38 @@ function addSwipeListener() {
   };
 }
 
-function showConfetti() {
-  // Simple emoji confetti burst
-  const confetti = document.createElement('div');
-  confetti.className = 'confetti';
-  confetti.innerText = '💖✨🎉';
-  document.body.appendChild(confetti);
-  setTimeout(() => confetti.remove(), 1200);
+// function to vibrate the device
+function vibrate(pattern) {
+  if (navigator.vibrate) {
+    navigator.vibrate(pattern);
+  }
+}
+
+// function to show exploding hearts animation
+function showExplodingHearts() {
+  // Exploding hearts animation
+  for (let i = 0; i < 18; i++) {
+    const heart = document.createElement('div');
+    heart.className = 'exploding-heart';
+    heart.innerText = '💖';
+    const angle = (i / 18) * 2 * Math.PI;
+    const distance = 80 + Math.random() * 30;
+    heart.style.left = `calc(50% + ${Math.cos(angle) * distance}px)`;
+    heart.style.top = `calc(50% + ${Math.sin(angle) * distance}px)`;
+    heart.style.transform = `translate(-50%, -50%) scale(${0.8 + Math.random() * 0.7})`;
+    heart.style.opacity = '1';
+    heart.style.position = 'fixed';
+    heart.style.zIndex = 9999;
+    heart.style.pointerEvents = 'none';
+    heart.style.fontSize = '2.2rem';
+    heart.style.transition = 'opacity 0.8s, transform 0.8s';
+    document.body.appendChild(heart);
+    setTimeout(() => {
+      heart.style.opacity = '0';
+      heart.style.transform += ' scale(1.7)';
+    }, 10);
+    setTimeout(() => heart.remove(), 900);
+  }
 }
 
 startBtn.onclick = startGame;

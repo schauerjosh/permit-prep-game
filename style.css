@@ -122,6 +122,34 @@ footer a {
   z-index: 9999;
   animation: confetti-fall 1.2s ease;
 }
+.exploding-heart {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  font-size: 2.2rem;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 1;
+  transition: opacity 0.8s, transform 0.8s;
+  will-change: opacity, transform;
+}
+.study-link {
+  display: inline-block;
+  margin-top: 0.7em;
+  color: #ff69b4;
+  font-weight: bold;
+  font-size: 1.1em;
+  text-decoration: underline wavy #ff69b4;
+  background: #23272f;
+  border-radius: 0.5em;
+  padding: 0.2em 0.7em;
+  transition: background 0.2s, color 0.2s;
+}
+.study-link:hover, .study-link:focus {
+  background: #ff69b4;
+  color: #fff;
+  text-decoration: underline wavy #fff;
+}
 @keyframes pop {
   0% { transform: scale(0.7); }
   70% { transform: scale(1.2); }
