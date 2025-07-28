@@ -29,45 +29,46 @@ const scoreRoundDiv = document.getElementById('score-round');
 const finalScoreDiv = document.getElementById('final-score');
 
 const congratsMessages = [
-  '✨ Yasss! Correct! ✨',
-  '💖 Slay! You got it!',
-  '🎉 Queen energy! 🎉',
-  '🔥 You ate that up!',
-  '💅 Periodt! No notes!',
-  '🌈 Werk it, bestie!',
-  '👑 Crown on, answer strong!',
-  '💜 You understood the assignment!',
-  '🦋 So iconic!',
-  '💫 That was a serve!',
-  '🌟 Main character moment!',
-  '🩷 Go off!',
-  '💃 You snapped!',
-  '🦄 Legendary!',
-  '🎀 Pink vibes only!',
-  '💥 Boom! Genius!',
-  '🦋 Butterfly brain!',
-  '🦄 Unicorn level smart!',
-  '💎 Shining bright!',
-  '🍦 Sweet victory!',
-  '🦩 Flamingo flex!',
-  '🪩 Disco brain!',
-  '🧁 Cupcake win!',
-  '🩰 Ballet of brains!',
-  '🕺 Dance break! You nailed it!',
-  '🦜 Parrot says: YAAAS!',
-  '🦚 Peacocking that answer!',
-  '🦥 Slow clap for you!',
-  '🦦 Otterly amazing!',
-  '🦔 Hedge-hogging the win!',
-  '🦦 Otterly fabulous!',
-  '🦄 You’re a legend!',
-  '🦋 Fluttering to success!',
-  '🦩 Pink power!',
-  '🦚 Strut your stuff!',
-  '🦜 Talk of the town!',
-  '🦥 Chill and still a champ!',
-  '🦦 Splashing success!',
+  '🎉 Nailed it!',
+  '🔥 You crushed it!',
+  '💡 Smart move!',
+  '🌈 That was epic!',
+  '🚀 Next-level thinking!',
+  '😎 You’re on fire!',
+  '👏 Big brain energy!',
+  '🌟 You’re unstoppable!',
+  '💯 That’s a win!',
+  '🧠 Genius alert!',
+  '🎮 Level up!',
+  '✨ You’re a star!',
+  '🏆 Winner vibes!',
+  '🤩 That’s how it’s done!',
+  '🦾 Power move!',
+  '🕹️ Game on!',
+  '🌍 World-class answer!',
+  '🎶 You’re in tune!',
+  '🌀 You’re trending!',
+  '🦸 Super skills!',
+  '🛸 Out of this world!',
+  '🦄 Unique and correct!',
+  '🧩 Puzzle master!',
+  '🎲 Rollin’ with the right answer!',
+  '🧃 Juice up that score!',
+  '🦋 Smooth!',
+  '🛹 Skater brain!',
+  '🧢 No cap, you’re smart!',
+  '🕶️ Cool and correct!',
+  '🎧 Vibing with the right answer!',
+  '🛼 Rolling to victory!',
+  '🦾 Flex!',
+  '🧑‍🚀 Space brain!',
+  '🦉 Wise choice!',
+  '🦦 Otterly awesome!',
+  '🦥 Chill win!',
   '🦔 Spiky smart!',
+  '🦚 Proud moment!',
+  '🦜 Parrot says: Nice!',
+  '🦩 Flamingo flex!',
   '🦄 Magic moment!',
   '🦋 Butterfly vibes!',
   '🦩 Flamingo fabulous!',
@@ -79,26 +80,39 @@ const congratsMessages = [
 ];
 
 const wrongMessages = [
-  'Oops! Not quite, but you got this! 💪',
-  'So close! Time for a quick study break 📚',
-  'No worries, even queens miss sometimes 👑',
-  'Wrong, but you’re still iconic! ✨',
-  'Try again, superstar! 🌟',
-  'Missed it, but you’re still a legend 🦄',
-  'Not the vibe, but you’ll get it next time! 💅',
-  'Study up and slay next round! 📖',
-  'Almost! Check the guide and come back stronger! 🔥',
-  'No biggie! Study and flex next time! 💪',
-  'You’re learning! Check the answer and glow up! 💡',
-  'Not today, but you’re still main character! 🎬',
-  'Wrong, but you’re still trending! 🔝',
-  'Keep going, bestie! You got this! 🩷',
-  'Study break! You’ll ace it next time! 📚',
-  'Oops! Let’s get that bread next time! 🍞',
-  'Not quite, but you’re still a star! ⭐️',
-  'Almost! Study and slay! 💅',
-  'No worries, you’re still iconic! ✨',
-  'Missed it, but you’re still a legend 🦄'
+  '😬 Not quite, but you got this!',
+  '📚 Study break time!',
+  '🤔 Try again!',
+  '🌀 Keep going!',
+  '🧩 Almost there!',
+  '🦉 Wise up! Review the answer!',
+  '🦦 Otter luck next time!',
+  '🦑 Squid missed it! Study time!',
+  '🦖 Dino-miss! Try again!',
+  '🦋 Butterfly brain glitch!',
+  '🦄 Unicorns make mistakes too!',
+  '💤 Sleepy answer! Wake up!',
+  '🧃 Juice up your knowledge!',
+  '🧠 Brain fart! Study up!',
+  '🫧 Bubble burst! Try again!',
+  '🦄 Not so magical this time!',
+  '🦋 Oopsie daisy! Review time!',
+  '🦦 Not your otter day!',
+  '🦄 Unicorns need practice too!',
+  '🦋 Butterfly effect: study more!',
+  '🦄 Missed it, but you’re still cool!',
+  '🦋 Not the answer, but you’re still awesome!',
+  '🛹 Wipeout! Try again!',
+  '🧢 No cap, study up!',
+  '🕶️ Missed, but you’re still chill!',
+  '🎧 Offbeat! Review the guide!',
+  '🛼 Roll back and study!',
+  '🦾 Flex those study skills!',
+  '🧑‍🚀 Space out? Study in!',
+  '🦉 Wise up! Review the answer!',
+  '🦦 Otter luck next time!',
+  '🦑 Squid missed it! Study time!',
+  '🦖 Dino-miss! Try again!'
 ];
 
 function shuffle(array) {
@@ -251,18 +265,62 @@ function nextQuestion() {
 }
 
 function showRetryRound() {
+  // Find missed questions
+  const missedIndexes = roundAnswered[currentRound - 1].map((answered, idx) => !answered ? idx : null).filter(idx => idx !== null);
   roundSection.classList.remove('hidden');
-  roundSection.innerHTML = `<div style='text-align:center;color:#ff69b4;font-size:1.2em;margin-bottom:1em;'>You need at least 21 correct to advance.<br>You got ${roundCorrect[currentRound - 1]} correct.<br><button id='retry-round-btn' style='margin-top:1em;background:#ff69b4;color:#fff;border:none;border-radius:1em;padding:0.7em 1.5em;font-size:1em;'>Retry Round</button></div>`;
+  let reviewBtn = '';
+  if (missedIndexes.length > 0) {
+    reviewBtn = `<button id='review-missed-btn' style='margin-top:1em;background:#5bc0eb;color:#fff;border:none;border-radius:1em;padding:0.7em 1.5em;font-size:1em;'>Review Missed Questions</button>`;
+  }
+  roundSection.innerHTML = `<div style='text-align:center;color:#e74c3c;font-size:1.2em;margin-bottom:1em;'>You need at least 21 correct to advance.<br>You got ${roundCorrect[currentRound - 1]} correct.<br><button id='retry-round-btn' style='margin-top:1em;background:#f76e5c;color:#fff;border:none;border-radius:1em;padding:0.7em 1.5em;font-size:1em;'>Retake Round</button>${reviewBtn}</div>`;
   document.getElementById('retry-round-btn').onclick = retryRound;
+  if (missedIndexes.length > 0) {
+    document.getElementById('review-missed-btn').onclick = () => reviewMissedQuestions(missedIndexes);
+  }
 }
 
-function retryRound() {
-  // Reset round state but keep score as is
-  roundAnswered[currentRound - 1] = Array(QUESTIONS_PER_ROUND).fill(false);
-  roundCorrect[currentRound - 1] = 0;
-  currentQuestionIndex = 0;
-  roundSection.classList.add('hidden');
-  showQuestion();
+function reviewMissedQuestions(missedIndexes) {
+  // Show only missed questions, do not update score or roundAnswered
+  let reviewIndex = 0;
+  function showReviewQuestion() {
+    feedbackDiv.classList.add('hidden');
+    nextBtn.classList.add('hidden');
+    choicesDiv.innerHTML = '';
+    const idx = missedIndexes[reviewIndex];
+    const question = rounds[currentRound - 1][idx];
+    questionText.innerHTML = `<span class="tiktok-q">Review:</span> ${question.question}`;
+    question.choices.forEach(choice => {
+      const btn = document.createElement('button');
+      btn.className = 'choice-btn';
+      btn.textContent = choice;
+      btn.disabled = false;
+      btn.onclick = () => {
+        Array.from(choicesDiv.children).forEach(b => b.disabled = true);
+        if (choice === question.answer) {
+          btn.classList.add('correct');
+          feedbackDiv.innerHTML = `<span class=\"tiktok-correct\">Nice! But you must retake the round to count it.</span>`;
+          feedbackDiv.style.color = '#5bc0eb';
+        } else {
+          btn.classList.add('wrong');
+          feedbackDiv.innerHTML = `<span class=\"tiktok-wrong\">Still missed! Review the guide.</span><br><a class=\"study-link\" href=\"${question.reference}\" target=\"_blank\">📖 Study</a>`;
+          feedbackDiv.style.color = '#e74c3c';
+        }
+        feedbackDiv.classList.remove('hidden');
+        nextBtn.classList.remove('hidden');
+      };
+      choicesDiv.appendChild(btn);
+    });
+    nextBtn.onclick = () => {
+      reviewIndex++;
+      if (reviewIndex < missedIndexes.length) {
+        showReviewQuestion();
+      } else {
+        // End review, show retry option again
+        showRetryRound();
+      }
+    };
+  }
+  showReviewQuestion();
 }
 
 // function to show the end screen
