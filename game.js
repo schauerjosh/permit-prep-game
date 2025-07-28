@@ -332,7 +332,14 @@ function showExplodingHearts() {
 
 startBtn.onclick = startGame;
 nextBtn.onclick = nextQuestion;
-nextRoundBtn.onclick = nextRound;
+nextRoundBtn.onclick = function() {
+  if (roundCorrect[currentRound - 1] >= 21) {
+    showRound();
+  } else {
+    roundSection.innerHTML = `<div style='text-align:center;color:#e74c3c;font-size:1.2em;margin-bottom:1em;'>You need at least 21 correct to advance.<br>You got ${roundCorrect[currentRound - 1]} correct.<br><button id='retry-round-btn' style='margin-top:1em;background:#ff69b4;color:#fff;border:none;border-radius:1em;padding:0.7em 1.5em;font-size:1em;'>Retry Round</button></div>`;
+    document.getElementById('retry-round-btn').onclick = retryRound;
+  }
+};
 restartBtn.onclick = restartGame;
 
 // On load, show start section only
