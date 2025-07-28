@@ -29,91 +29,46 @@ const scoreRoundDiv = document.getElementById('score-round');
 const finalScoreDiv = document.getElementById('final-score');
 
 const congratsMessages = [
-  '🎉 Nailed it!',
-  '🔥 You crushed it!',
-  '💡 Smart move!',
-  '🌈 That was epic!',
-  '🚀 Next-level thinking!',
-  '😎 You’re on fire!',
-  '👏 Big brain energy!',
-  '🌟 You’re unstoppable!',
-  '💯 That’s a win!',
-  '🧠 Genius alert!',
-  '🎮 Level up!',
-  '✨ You’re a star!',
-  '🏆 Winner vibes!',
-  '🤩 That’s how it’s done!',
-  '🦾 Power move!',
-  '🕹️ Game on!',
-  '🌍 World-class answer!',
-  '🎶 You’re in tune!',
-  '🌀 You’re trending!',
-  '🦸 Super skills!',
-  '🛸 Out of this world!',
-  '🦄 Unique and correct!',
-  '🧩 Puzzle master!',
-  '🎲 Rollin’ with the right answer!',
-  '🧃 Juice up that score!',
-  '🦋 Smooth!',
-  '🛹 Skater brain!',
-  '🧢 No cap, you’re smart!',
-  '🕶️ Cool and correct!',
-  '🎧 Vibing with the right answer!',
-  '🛼 Rolling to victory!',
-  '🦾 Flex!',
-  '🧑‍🚀 Space brain!',
-  '🦉 Wise choice!',
-  '🦦 Otterly awesome!',
-  '🦥 Chill win!',
-  '🦔 Spiky smart!',
-  '🦚 Proud moment!',
-  '🦜 Parrot says: Nice!',
-  '🦩 Flamingo flex!',
-  '🦄 Magic moment!',
-  '🦋 Butterfly vibes!',
-  '🦩 Flamingo fabulous!',
-  '🦚 Peacock proud!',
-  '🦜 Parrot party!',
-  '🦥 Sloth speed, genius brain!',
-  '🦦 Otterly unstoppable!',
-  '🦔 Hedgehog hero!'
+  'Nice! You got it!',
+  'Correct! Keep going!',
+  'Awesome job!',
+  'You nailed it!',
+  'Great work!',
+  'That’s right!',
+  'Solid answer!',
+  'You’re on a roll!',
+  'Smart move!',
+  'You’re crushing it!',
+  'Well done!',
+  'You’re learning fast!',
+  'Impressive!',
+  'You’re unstoppable!',
+  'You’re leveling up!',
+  'That’s how it’s done!',
+  'You’re making progress!',
+  'You’re a star!',
+  'You’re in the zone!',
+  'Keep up the good work!'
 ];
 
 const wrongMessages = [
-  '😬 Not quite, but you got this!',
-  '📚 Study break time!',
-  '🤔 Try again!',
-  '🌀 Keep going!',
-  '🧩 Almost there!',
-  '🦉 Wise up! Review the answer!',
-  '🦦 Otter luck next time!',
-  '🦑 Squid missed it! Study time!',
-  '🦖 Dino-miss! Try again!',
-  '🦋 Butterfly brain glitch!',
-  '🦄 Unicorns make mistakes too!',
-  '💤 Sleepy answer! Wake up!',
-  '🧃 Juice up your knowledge!',
-  '🧠 Brain fart! Study up!',
-  '🫧 Bubble burst! Try again!',
-  '🦄 Not so magical this time!',
-  '🦋 Oopsie daisy! Review time!',
-  '🦦 Not your otter day!',
-  '🦄 Unicorns need practice too!',
-  '🦋 Butterfly effect: study more!',
-  '🦄 Missed it, but you’re still cool!',
-  '🦋 Not the answer, but you’re still awesome!',
-  '🛹 Wipeout! Try again!',
-  '🧢 No cap, study up!',
-  '🕶️ Missed, but you’re still chill!',
-  '🎧 Offbeat! Review the guide!',
-  '🛼 Roll back and study!',
-  '🦾 Flex those study skills!',
-  '🧑‍🚀 Space out? Study in!',
-  '🦉 Wise up! Review the answer!',
-  '🦦 Otter luck next time!',
-  '🦑 Squid missed it! Study time!',
-  '🦖 Dino-miss! Try again!'
+  'Not quite, but keep trying!',
+  'Almost! Review and try again.',
+  'Missed it, but you’re learning!',
+  'No worries, you’ll get it next time!',
+  'Keep going, you’ve got this!',
+  'Review the guide and try again!',
+  'Mistakes help you grow!',
+  'Don’t give up!',
+  'You’re getting closer!',
+  'Try again, you’re improving!',
+  'Keep practicing!',
+  'Learning takes time!',
+  'You’re making progress!',
+  'Review and keep moving forward!',
+  'Stay positive and try again!'
 ];
+
 
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -363,28 +318,28 @@ function vibrate(pattern) {
 
 // function to show exploding hearts animation
 function showExplodingHearts() {
-  // Exploding hearts animation
+  // Gender-neutral confetti animation
   for (let i = 0; i < 18; i++) {
-    const heart = document.createElement('div');
-    heart.className = 'exploding-heart';
-    heart.innerText = '💖';
+    const confetti = document.createElement('div');
+    confetti.className = 'exploding-heart';
+    confetti.innerText = ['🎉','⭐','✨','🎈','🎊','🟢','🔵','🟣','🟠','🟡'][i%10];
     const angle = (i / 18) * 2 * Math.PI;
     const distance = 80 + Math.random() * 30;
-    heart.style.left = `calc(50% + ${Math.cos(angle) * distance}px)`;
-    heart.style.top = `calc(50% + ${Math.sin(angle) * distance}px)`;
-    heart.style.transform = `translate(-50%, -50%) scale(${0.8 + Math.random() * 0.7})`;
-    heart.style.opacity = '1';
-    heart.style.position = 'fixed';
-    heart.style.zIndex = 9999;
-    heart.style.pointerEvents = 'none';
-    heart.style.fontSize = '2.2rem';
-    heart.style.transition = 'opacity 0.8s, transform 0.8s';
-    document.body.appendChild(heart);
+    confetti.style.left = `calc(50% + ${Math.cos(angle) * distance}px)`;
+    confetti.style.top = `calc(50% + ${Math.sin(angle) * distance}px)`;
+    confetti.style.transform = `translate(-50%, -50%) scale(${0.8 + Math.random() * 0.7})`;
+    confetti.style.opacity = '1';
+    confetti.style.position = 'fixed';
+    confetti.style.zIndex = 9999;
+    confetti.style.pointerEvents = 'none';
+    confetti.style.fontSize = '2.2rem';
+    confetti.style.transition = 'opacity 0.8s, transform 0.8s';
+    document.body.appendChild(confetti);
     setTimeout(() => {
-      heart.style.opacity = '0';
-      heart.style.transform += ' scale(1.7)';
+      confetti.style.opacity = '0';
+      confetti.style.transform += ' scale(1.7)';
     }, 10);
-    setTimeout(() => heart.remove(), 900);
+    setTimeout(() => confetti.remove(), 900);
   }
 }
 
