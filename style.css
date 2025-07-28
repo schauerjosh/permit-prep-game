@@ -169,6 +169,23 @@ footer a {
   color: #fff;
   transform: scale(1.05);
 }
+#start-btn {
+  font-size: 1.3rem;
+  padding: 1.2rem 2.2rem;
+  border-radius: 1.5rem;
+  background: linear-gradient(90deg, #5bc0eb 0%, #f76e5c 100%);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 2px 12px #0002;
+  margin: 1.2rem auto 0 auto;
+  display: block;
+  transition: background 0.2s, color 0.2s, transform 0.1s;
+}
+#start-btn:hover, #start-btn:focus {
+  background: linear-gradient(90deg, #f76e5c 0%, #5bc0eb 100%);
+  color: #fff;
+  transform: scale(1.05);
+}
 @media (max-width: 600px) {
   #game-container {
     margin-top: 0.5rem;
